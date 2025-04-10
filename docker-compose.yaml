@@ -1,0 +1,33 @@
+version: "3.3"
+services:
+  mongodb:
+    image: "mongo"
+    volumes:
+      - goals-db:/data/db
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=erick
+    #   - MONGO_INITDB_ROOT_PASSWORD=erick
+    env_file:
+      - ./env/mongo.env
+    # networks:
+    #   - goals-network
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - goals-logs:/app/logs
+      - ./backend:/app
+      - /app/node_modules
+    env_file:
+      - ./env/backend.env
+    depends_on:
+      - mongodb
+  # frontend:
+volumes:
+  goals-db:
+  goals-logs:
+# networks:
+#   goals-network:
